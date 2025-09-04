@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Immaculate Grid Helper",
+  "version": "1.0",
+  "description": "Immaculate Grid Helper: only for baseball",
+  "permissions": ["scripting", "activeTab"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.immaculategrid.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+
+}
