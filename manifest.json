@@ -12,6 +12,12 @@
       "matches": ["https://www.immaculategrid.com/*"],
       "js": ["content.js"]
     }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["teams.json"],
+      "matches": ["<all_urls>"]
+    }
   ]
 
 }

@@ -1,12 +1,19 @@
-// popup.js
+// 讀取 teams.json
+async function loadTeams() {
+  const res = await fetch(chrome.runtime.getURL('teams.json'));
+  return await res.json();
+}
+
 (async () => {
+  const teams = await loadTeams();
+
   // 找到當前分頁
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   chrome.scripting.executeScript(
     {
       target: { tabId: tab.id },
-      func: () => {
+      func: (teams) => {
         const elements = document.querySelectorAll('div.inline-block.normal-case');
 
         const texts = Array.from(elements).map(el => {
@@ -33,16 +40,26 @@
         let letterIndex = 0;
         for (let r = 1; r < 4; r++) {
           for (let c = 1; c < 4; c++) {
-            const query = encodeURIComponent(grid[r][0] + " and " + grid[0][c] + " player");
-            grid[r][c] = {
-              url: `https://www.google.com/search?q=${query}`,
-              label: letters[letterIndex++]
-            };
+            if (teams.hasOwnProperty(grid[r][0].trim()) && teams.hasOwnProperty(grid[0][c].trim())) {
+              const team1 = teams[grid[r][0].trim()];
+              const team2 = teams[grid[0][c].trim()];
+              grid[r][c] = {
+                url: `https://www.baseball-reference.com/friv/players-who-played-for-multiple-teams-franchises.fcgi?level=franch&t1=${encodeURIComponent(team1)}&t2=${encodeURIComponent(team2)}`,
+                label: letters[letterIndex++]
+              };
+            }else{
+              const query = encodeURIComponent(grid[r][0] + " and " + grid[0][c] + " player");
+              grid[r][c] = {
+                url: `https://www.google.com/search?q=${query}`,
+                label: letters[letterIndex++]
+              };
+            }
           }
         }
 
         return grid;
       },
+      args: [teams] // 傳入 teams
     },
     (results) => {
       if (results && results[0] && results[0].result) {
