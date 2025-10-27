@@ -40,15 +40,17 @@ async function loadTeams() {
         let letterIndex = 0;
         for (let r = 1; r < 4; r++) {
           for (let c = 1; c < 4; c++) {
-            if (teams.hasOwnProperty(grid[r][0].trim()) && teams.hasOwnProperty(grid[0][c].trim())) {
-              const team1 = teams[grid[r][0].trim()];
-              const team2 = teams[grid[0][c].trim()];
+            label1 = (grid[r][0] || "").split(/\s+/).filter(Boolean).join(' ').trim();
+            label2 = (grid[0][c] || "").split(/\s+/).filter(Boolean).join(' ').trim();
+            if (teams.hasOwnProperty(label1) && teams.hasOwnProperty(label2)) {
+              const team1 = teams[label1];
+              const team2 = teams[label2];
               grid[r][c] = {
                 url: `https://www.baseball-reference.com/friv/players-who-played-for-multiple-teams-franchises.fcgi?level=franch&t1=${encodeURIComponent(team1)}&t2=${encodeURIComponent(team2)}`,
                 label: letters[letterIndex++]
               };
             }else{
-              const query = encodeURIComponent(grid[r][0] + " and " + grid[0][c] + " player");
+              const query = encodeURIComponent(label1 + " and " + label2);
               grid[r][c] = {
                 url: `https://www.google.com/search?q=${query}`,
                 label: letters[letterIndex++]
